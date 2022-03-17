@@ -1,7 +1,8 @@
 import PySimpleGUI as gui
 import prog
+import numpy as np
 
-from prog import D1_Chk, D2_Chk, Domain_Chk
+from prog import *
 
 
 L_Functie = [
@@ -41,6 +42,7 @@ L_GoodEnd = [
 
 
 layout = [
+    #[gui.pin(gui.Column([[gui.Text("Punctaj: 0", key="P")]], key="-P-", expand_x=True, expand_y=True))],
     [gui.pin(gui.Column(L_Functie, key="-LF-", expand_x=True, expand_y=True))],
     [gui.pin(gui.Column(L_Domeniu,visible=False, key="-LDom-", expand_x=True, expand_y=True))],
     [gui.pin(gui.Column(L_Derivata1, visible=False, key="-LDeriv1-", expand_x=True, expand_y=True))],
@@ -51,16 +53,18 @@ layout = [
 ]
 
 
-window = gui.Window(title="Derivate si Functii", layout=layout)
+window = gui.Window(title="Derivate si Functii", layout=layout, )
 
 
 def reset():
     for i in ["-LF-", "-LDom-", "-LDeriv1-", "-LDeriv2-", "-LBadEnd-", "-LGoodEnd-"]:
         window[i].update(visible=False)
 
+p=0
 
 while True:
     event, values = window.read()
+    
     if event == "F":
         reset()
         window["-LDom-"].update(visible=True)
@@ -76,6 +80,7 @@ while True:
         reset()
         if D1_Chk(values["-Functie-"], values["-Derivata1-"]):
             window["-LDeriv2-"].update(visible=True)
+            p = p + 1
         else:
             window["-LBadEnd-"].update(visible=True)
 
@@ -83,10 +88,17 @@ while True:
         reset()
         if D2_Chk(values["-Functie-"], values["-Derivata2-"]):
             window["-LGoodEnd-"].update(visible=True)
+            y = np.linspace(-5,5)
+            Grafic(values["-Functie-"], y, func(values["-Functie-"], y), gf(values["-Functie-"], y))
+            gui.popup(title="Graficul Functiei",image="graf.png")
+            p = p + 1
         else:
             window["-LBadEnd-"].update(visible=True)
+
+    #window["P"].update(f"Punctaj: {p}")
 
     if event == gui.WIN_CLOSED:
         break
 
 window.close()
+

@@ -1,7 +1,37 @@
 from sympy import *
 import re
+import matplotlib.pyplot as plt
+import numpy as np
 
 x = Symbol('x')
+
+
+def func(f,y):
+    f = sympify(f)
+    l = []
+    for i in y:
+        l.append(f.subs(x, i))
+    return l
+
+
+def gf(f,y):
+    f = sympify(f)
+    l= []
+    for i in y:
+        l.append(complex(solve(f-i, x)[0]).imag)
+    return l
+
+
+def Grafic(f, y, func, gf):
+    
+    plt.plot(y, func, color='red', label='Graficul Functie')
+    #plt.plot(y, gf, color='blue', label='Graficul Functiei')
+    plt.gca().spines['left'].set_position('zero',)
+    plt.gca().spines['bottom'].set_position('zero',)
+    plt.legend(loc='upper left')
+    plt.grid(True)
+    plt.savefig("graf.png")
+
 
 
 def Domain_Chk(f, d):
@@ -33,6 +63,7 @@ def D2_Chk(f, d):
         return True
     else:
         return False
+
 
 
 """
